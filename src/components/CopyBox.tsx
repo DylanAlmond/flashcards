@@ -28,6 +28,7 @@ const CopyBox = ({ value }: CopyBoxProps) => {
           size={'icon'}
           onClick={handleCopy}
         >
+          <span className="sr-only">Copy</span>
           {copied ? <Check /> : <Copy />}
         </Button>
       </div>

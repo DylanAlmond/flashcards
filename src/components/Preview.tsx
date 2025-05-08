@@ -52,13 +52,9 @@ const Preview = ({ data }: PreviewProps) => {
   return (
     <div className="relative flex h-full w-full flex-col items-center justify-center gap-4 overflow-hidden p-4">
       <div className="grid w-full grid-cols-[auto_1fr_auto] items-center gap-4">
-        <Button
-          variant={'outline'}
-          size={'icon'}
-          className="ml-auto"
-          onClick={shuffleCards}
-        >
+        <Button variant={'outline'} className="ml-auto" onClick={shuffleCards}>
           <Dice5 />
+          <span className="sr-only sm:not-sr-only">Shuffle Cards</span>
         </Button>
 
         <p className="text-center font-semibold">{data.title}</p>
@@ -69,7 +65,7 @@ const Preview = ({ data }: PreviewProps) => {
           search={{ data: encodeFlashcardSet(data) }}
         >
           <Pen />
-          <span className="hidden sm:block">Edit</span>
+          <span className="sr-only sm:not-sr-only">Edit</span>
         </Link>
       </div>
 
@@ -90,7 +86,6 @@ const Preview = ({ data }: PreviewProps) => {
                     maxFontSize={48}
                     minFontSize={20}
                     className="font-semibold"
-                    role="textbox"
                   >
                     {card.question}
                   </AutoText>
@@ -114,9 +109,10 @@ const Preview = ({ data }: PreviewProps) => {
           variant={'outline'}
         >
           <ArrowLeft />
+          <span className="sr-only sm:not-sr-only">Previous Card</span>
         </Button>
 
-        <p className="text-secondary-foreground m-auto text-sm font-semibold">
+        <p className="text-secondary-foreground m-auto text-lg font-semibold">
           {current} of {cards.length}
         </p>
 
@@ -125,6 +121,8 @@ const Preview = ({ data }: PreviewProps) => {
           onClick={() => api?.scrollNext()}
           variant={api?.canScrollNext() ? 'default' : 'outline'}
         >
+          <span className="sr-only sm:not-sr-only">Next Card</span>
+
           <ArrowRight />
         </Button>
       </nav>

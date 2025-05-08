@@ -26,7 +26,7 @@ export function decodeFlashcardSet(encodedString: string): FlashcardSet | null {
 
     return res.data;
   } catch (error) {
-    console.error('Unable to decode flashcard set data:\n', error);
+    console.warn('Unable to decode flashcard set data:\n', error);
     return null;
   }
 }

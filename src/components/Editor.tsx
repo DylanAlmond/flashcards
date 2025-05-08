@@ -196,6 +196,7 @@ const Editor = ({ initialData }: EditorProps) => {
                           )}
                         >
                           <X />
+                          <span className="sr-only">Delete</span>
                         </Button>
                         <FlashcardTitle>{card.question}</FlashcardTitle>
                       </FlashcardQuestion>
@@ -210,6 +211,7 @@ const Editor = ({ initialData }: EditorProps) => {
                         'relative h-full w-full text-center select-none'
                       }
                     >
+                      <span className="sr-only">Add Card</span>
                       <Plus className="text-primary size-8!" />
                     </FlashcardQuestion>
                   </SidebarMenuButton>
@@ -228,6 +230,8 @@ const Editor = ({ initialData }: EditorProps) => {
             className="text-center font-semibold"
             contentEditable={true}
             suppressContentEditableWarning
+            aria-label="Title"
+            role="textbox"
             onBlur={(e) => {
               updateTitle(e.currentTarget.textContent || 'Untitled');
             }}
@@ -239,7 +243,7 @@ const Editor = ({ initialData }: EditorProps) => {
             <DialogTrigger asChild>
               <Button onClick={handleShare} variant={'default'}>
                 <Share />
-                <span className="hidden sm:block">Save</span>
+                <span className="sr-only sm:not-sr-only">Save</span>
               </Button>
             </DialogTrigger>
             <DialogContent>
@@ -292,6 +296,7 @@ const Editor = ({ initialData }: EditorProps) => {
                       className="w-full font-semibold"
                       role="textbox"
                       contentEditable
+                      aria-label="Flashcard Question"
                       suppressContentEditableWarning={true}
                       onClick={(e) => e.stopPropagation()}
                       onBlur={(e) =>
@@ -312,6 +317,7 @@ const Editor = ({ initialData }: EditorProps) => {
                       minFontSize={20}
                       contentEditable
                       suppressContentEditableWarning={true}
+                      aria-label="Flashcard Answer"
                       onClick={(e) => e.stopPropagation()}
                       onBlur={(e) =>
                         updateCard(
@@ -337,9 +343,10 @@ const Editor = ({ initialData }: EditorProps) => {
             variant={'outline'}
           >
             <ArrowLeft />
+            <span className="sr-only sm:not-sr-only">Previous Card</span>
           </Button>
 
-          <p className="text-secondary-foreground m-auto text-sm font-semibold">
+          <p className="text-secondary-foreground m-auto text-lg font-semibold">
             {current} of {count}
           </p>
 
@@ -348,6 +355,7 @@ const Editor = ({ initialData }: EditorProps) => {
             onClick={() => api?.scrollNext()}
             variant={api?.canScrollNext() ? 'default' : 'outline'}
           >
+            <span className="sr-only sm:not-sr-only">Next Card</span>
             <ArrowRight />
           </Button>
         </nav>
