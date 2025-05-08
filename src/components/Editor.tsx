@@ -24,7 +24,7 @@ import {
   SidebarTrigger
 } from './ui/sidebar';
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { cn, encodeFlashcardSet } from '@/lib/utils';
+import { byteSize, cn, encodeFlashcardSet } from '@/lib/utils';
 import { Button } from './ui/button';
 import { ArrowLeft, ArrowRight, Plus, Share, X } from 'lucide-react';
 import { nanoid } from 'nanoid';
@@ -67,6 +67,10 @@ const Editor = ({ initialData }: EditorProps) => {
   const count = useMemo(() => Object.keys(data.cards).length, [data.cards]);
 
   const [encodedData, setEncodedData] = useState<string | null>(null);
+  const encodedDataByteSize = useMemo(
+    () => (encodedData ? byteSize(encodedData) : -1),
+    [encodedData]
+  );
 
   const handleShareCode = useCallback(async () => {
     if (!encodedData) return;
@@ -90,6 +94,9 @@ const Editor = ({ initialData }: EditorProps) => {
 
   const handleShare = useCallback(() => {
     const encoded = encodeFlashcardSet(data);
+
+    console.log(`${window.location.origin}/view?data=${encoded}`);
+
     setEncodedData(encoded);
   }, [data]);
 
@@ -256,11 +263,19 @@ const Editor = ({ initialData }: EditorProps) => {
 
               {encodedData ? (
                 <>
-                  <QRCodeCanvas
-                    value={`${window.location.origin}/view?data=${encodedData}`}
-                    size={256}
-                    className="mx-auto"
-                  />
+                  {encodedDataByteSize < 2953 ? (
+                    <QRCodeCanvas
+                      value={`${window.location.origin}/view?data=${encodedData}`}
+                      size={256}
+                      className="mx-auto"
+                    />
+                  ) : (
+                    <p className="text-destructive">
+                      Oops! The flashcard set is too large to be encoded into a
+                      QR code.
+                    </p>
+                  )}
+
                   <Button
                     onClick={handleShareCode}
                     disabled={!navigator.canShare}
@@ -271,7 +286,7 @@ const Editor = ({ initialData }: EditorProps) => {
                   <CopyBox value={encodedData} />
                 </>
               ) : (
-                <p className="text-secondary">Missing Card Data.</p>
+                <p className="text-destructive">Unable to generate share code.</p>
               )}
             </DialogContent>
           </Dialog>
@@ -350,14 +365,22 @@ const Editor = ({ initialData }: EditorProps) => {
             {current} of {count}
           </p>
 
-          <Button
-            disabled={!api?.canScrollNext()}
-            onClick={() => api?.scrollNext()}
-            variant={api?.canScrollNext() ? 'default' : 'outline'}
-          >
-            <span className="sr-only sm:not-sr-only">Next Card</span>
-            <ArrowRight />
-          </Button>
+          {api?.canScrollNext() ? (
+            <Button
+              onClick={() =>
+                api.canScrollNext() ? api.scrollNext() : addSlide()
+              }
+              variant={'outline'}
+            >
+              <span className="sr-only sm:not-sr-only">Next Card</span>
+              <ArrowRight />
+            </Button>
+          ) : (
+            <Button onClick={addSlide} variant={'default'}>
+              <span className="sr-only sm:not-sr-only">Add New Card</span>
+              <Plus />
+            </Button>
+          )}
         </nav>
       </div>
     </SidebarProvider>

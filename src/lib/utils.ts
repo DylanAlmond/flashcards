@@ -6,6 +6,8 @@ import {
 import { twMerge } from 'tailwind-merge';
 import { flashcardSetSchema, type FlashcardSet } from './types';
 
+export const byteSize = (str: string) => new Blob([str]).size;
+
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
